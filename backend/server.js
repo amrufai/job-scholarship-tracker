@@ -1,0 +1,23 @@
+const express = require("express");
+const cors = require("cors");
+
+require("dotenv").config(); // Allows server.js to read the .env file
+const db = require("./config/db"); // Runs the database connection
+
+// Initialize the Express app
+const app = express();
+
+// Middleware
+app.use(cors()); // Allows your React frontend to communicate with this backend
+app.use(express.json()); // Allows your backend to understand JSON data
+
+// A simple test route
+app.get("/", (req, res) => {
+  res.send("Your Scholarship Tracker API is running!");
+});
+
+// Define the port and start the server
+const PORT = 5000;
+app.listen(PORT, () => {
+  console.log(`Server running smoothly on port ${PORT}`);
+});
