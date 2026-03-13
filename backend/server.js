@@ -13,11 +13,23 @@ app.use(express.json()); // Allows your backend to understand JSON data
 
 // A simple test route
 app.get("/", (req, res) => {
-  res.send("Your Scholarship Tracker API is running!");
+    res.send("Your Scholarship Tracker API is running!");
 });
+
+// Import Routes
+const authRoutes = require("./routes/authRoutes");
+
+// Use Routes
+app.use("/api/auth", authRoutes);
+
+// Import the new application routes
+const applicationRoutes = require("./routes/applicationRoutes");
+
+// Use the routes
+app.use("/api/applications", applicationRoutes);
 
 // Define the port and start the server
 const PORT = 5000;
 app.listen(PORT, () => {
-  console.log(`Server running smoothly on port ${PORT}`);
+    console.log(`Server running smoothly on port ${PORT}`);
 });
