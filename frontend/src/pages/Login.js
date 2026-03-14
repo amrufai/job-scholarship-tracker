@@ -22,8 +22,9 @@ const Login = () => {
         password,
       });
 
-      // 2. If successful, save the token to the browser's local storage
+      // 2. If successful, save the token and name to the browser's local storage
       localStorage.setItem("token", response.data.token);
+      localStorage.setItem("userName", response.data.name); // ADD THIS LINE!
       
       // 3. Redirect the user back to the Dashboard
       navigate("/");

@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Sidebar from "./components/Sidebar";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
+import Dashboard from "./pages/Dashboard";
 
 function App() {
   return (
@@ -14,7 +15,7 @@ function App() {
         {/* Main Content changes based on the URL */}
         <div className="main-content">
           <Routes>
-            <Route path="/" element={<h1>Welcome to your Dashboard</h1>} />
+            <Route path="/" element={<Dashboard />} />
             <Route path="/jobs" element={<h1>Your Job Applications</h1>} />
             <Route path="/scholarships" element={<h1>Your Scholarship Applications</h1>} />
             <Route path="/login" element={<Login />} />
