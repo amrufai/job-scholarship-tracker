@@ -8,6 +8,7 @@ import AddApplication from "./pages/AddApplication";
 import EditApplication from "./pages/EditApplication";
 import Jobs from "./pages/Jobs";
 import Scholarships from "./pages/Scholarships";
+import Settings from "./pages/Settings";
 
 function App() {
   return (
@@ -26,6 +27,7 @@ function App() {
             <Route path="/signup" element={<Signup />} />
             <Route path="/add-application" element={<AddApplication />} />
             <Route path="/edit/:id" element={<EditApplication />} />
+            <Route path="/settings" element={<Settings />} />
             
           </Routes>
         </div>
