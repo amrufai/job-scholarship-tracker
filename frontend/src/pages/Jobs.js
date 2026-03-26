@@ -1,0 +1,87 @@
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
+
+const Jobs = () => {
+    const [applications, setApplications] = useState([]);
+    const [error, setError] = useState("");
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        const fetchApplications = async () => {
+        const token = localStorage.getItem("token");
+        if (!token) return navigate("/login");
+        
+        try {
+            const response = await axios.get("http://localhost:5000/api/applications", {
+            headers: { Authorization: `Bearer ${token}` }
+            });
+            // THE FILTER: Only keep the items where type is "Job"
+            const jobsOnly = response.data.filter(app => 
+            app.type && app.type.trim().toLowerCase() === "job"
+        );
+            setApplications(jobsOnly);
+        } catch (err) {
+            setError("Failed to fetch applications.");
+        }
+        };
+        fetchApplications();
+    }, [navigate]);
+
+    const handleDelete = async (id) => {
+        if (window.confirm("Are you sure you want to delete this job application?")) {
+        try {
+            const token = localStorage.getItem("token");
+            await axios.delete(`http://localhost:5000/api/applications/${id}`, {
+            headers: { Authorization: `Bearer ${token}` }
+            });
+            setApplications(applications.filter(app => app.id !== id));
+        } catch (err) {
+            alert("Failed to delete application.");
+        }
+        }
+    };
+
+    return (
+        <div>
+        <h2 style={{ marginBottom: "20px" }}>Software Engineering Jobs</h2>
+        {error && <p style={{ color: "red" }}>{error}</p>}
+        
+        <div style={{ display: "flex", flexDirection: "column", gap: "15px" }}>
+            {applications.length === 0 ? (
+            <p>No job applications tracked yet. Keep searching!</p>
+            ) : (
+            applications.map((app) => (
+                <div key={app.id} style={{ padding: "20px", border: "1px solid #e0e0e0", borderRadius: "8px", backgroundColor: "white", boxShadow: "0 2px 4px rgba(0,0,0,0.05)" }}>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "10px" }}>
+                    <h3 style={{ margin: "0", color: "#1a1a2e" }}>{app.title}</h3>
+                    <div style={{ display: "flex", gap: "10px" }}>
+                    <button onClick={() => navigate(`/edit/${app.id}`, { state: { app } })} style={{ padding: "5px 10px", cursor: "pointer", backgroundColor: "#f1ebd9", border: "none", borderRadius: "4px", fontWeight: "bold" }}>Edit</button>
+                    <button onClick={() => handleDelete(app.id)} style={{ padding: "5px 10px", cursor: "pointer", backgroundColor: "#ff4d4d", color: "white", border: "none", borderRadius: "4px", fontWeight: "bold" }}>Delete</button>
+                    </div>
+                </div>
+
+                <p style={{ margin: "5px 0" }}><strong>Company:</strong> {app.organization}</p>
+                <p style={{ margin: "5px 0" }}>
+                    <strong>Status:</strong> 
+                    <span style={{ marginLeft: "10px", padding: "4px 8px", backgroundColor: "#f1ebd9", borderRadius: "12px", fontSize: "0.9em" }}>
+                    {app.status}
+                    </span>
+                </p>
+                
+                {/* NEW: Clean date formatting and clickable links! */}
+                {app.date_applied && <p style={{ margin: "8px 0", color: "#28a745", fontWeight: "bold" }}>Applied On: {new Date(app.date_applied).toLocaleDateString()}</p>}
+                {app.deadline && <p style={{ margin: "8px 0", color: "#d9534f", fontWeight: "bold" }}>Deadline: {new Date(app.deadline).toLocaleDateString()}</p>}
+
+                {app.link && <p style={{ margin: "8px 0" }}><a href={app.link} target="_blank" rel="noopener noreferrer" style={{ color: "#0066cc", textDecoration: "none", fontWeight: "bold" }}>🔗 View Posting</a></p>}
+                
+                {app.notes && <p style={{ margin: "10px 0 0 0", fontStyle: "italic", color: "#555" }}>Notes: {app.notes}</p>}
+                </div>
+            ))
+            )}
+        </div>
+        </div>
+    );
+};
+
+export default Jobs;

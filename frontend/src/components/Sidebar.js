@@ -20,6 +20,11 @@ const Sidebar = () => {
   return (
     <div className="sidebar">
       <h2>SS Tracker</h2>
+
+      <Link to="/add-application" style={{ backgroundColor: "#1a1a2e", color: "white", textAlign: "center", marginBottom: "20px", borderRadius: "8px", fontWeight: "bold" }}>
+        + Add New
+      </Link>
+      
       <Link to="/">Dashboard</Link>
       <Link to="/jobs">Jobs</Link>
       <Link to="/scholarships">Scholarships</Link>
