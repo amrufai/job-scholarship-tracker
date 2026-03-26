@@ -28,7 +28,7 @@ const AddApplication = () => {
 
         try {
         await axios.post(
-            "http://localhost:5000/api/applications",
+            "https://job-scholarship-tracker.onrender.com/api/applications",
             { title, organization, type, status, date_applied: dateApplied, deadline, link, notes },
             { headers: { Authorization: `Bearer ${token}` } }
         );

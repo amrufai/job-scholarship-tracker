@@ -17,7 +17,7 @@ const Login = () => {
 
     try {
       // 1. Send the email and password to your Node backend
-      const response = await axios.post("http://localhost:5000/api/auth/login", {
+      const response = await axios.post("https://job-scholarship-tracker.onrender.com/api/auth/login", {
         email,
         password,
       });

@@ -14,7 +14,7 @@ const Signup = () => {
     e.preventDefault();
     try {
       // NEW: Include displayName in the payload
-      await axios.post("http://localhost:5000/api/auth/register", {
+      await axios.post("https://job-scholarship-tracker.onrender.com/api/auth/register", {
         displayName,
         email,
         password,

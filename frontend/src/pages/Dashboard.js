@@ -24,7 +24,7 @@ const Dashboard = () => {
         return;
       }
       try {
-        const response = await axios.get("http://localhost:5000/api/applications", {
+        const response = await axios.get("https://job-scholarship-tracker.onrender.com/api/applications", {
           headers: { Authorization: `Bearer ${token}` }
         });
         
@@ -52,7 +52,7 @@ const Dashboard = () => {
     if (window.confirm("Are you sure you want to delete this application?")) {
       try {
         const token = localStorage.getItem("token");
-        await axios.delete(`http://localhost:5000/api/applications/${id}`, {
+        await axios.delete(`https://job-scholarship-tracker.onrender.com/api/applications/${id}`, {
           headers: { Authorization: `Bearer ${token}` }
         });
         // Instantly remove it from the screen without reloading the page

@@ -35,7 +35,7 @@ const EditApplication = () => {
 
         try {
         await axios.put(
-            `http://localhost:5000/api/applications/${appData.id}`,
+            `https://job-scholarship-tracker.onrender.com/api/applications/${appData.id}`,
             // NEW: Make sure date_applied is included in the payload!
             { title, organization, type, status, date_applied: dateApplied, deadline, link, notes },
             { headers: { Authorization: `Bearer ${token}` } }

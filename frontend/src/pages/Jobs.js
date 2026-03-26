@@ -13,7 +13,7 @@ const Jobs = () => {
         if (!token) return navigate("/login");
         
         try {
-            const response = await axios.get("http://localhost:5000/api/applications", {
+            const response = await axios.get("https://job-scholarship-tracker.onrender.com/api/applications", {
             headers: { Authorization: `Bearer ${token}` }
             });
             // THE FILTER: Only keep the items where type is "Job"
@@ -38,7 +38,7 @@ const Jobs = () => {
         if (window.confirm("Are you sure you want to delete this job application?")) {
         try {
             const token = localStorage.getItem("token");
-            await axios.delete(`http://localhost:5000/api/applications/${id}`, {
+            await axios.delete(`https://job-scholarship-tracker.onrender.com/api/applications/${id}`, {
             headers: { Authorization: `Bearer ${token}` }
             });
             setApplications(applications.filter(app => app.id !== id));
