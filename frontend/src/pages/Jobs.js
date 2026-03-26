@@ -17,10 +17,16 @@ const Jobs = () => {
             headers: { Authorization: `Bearer ${token}` }
             });
             // THE FILTER: Only keep the items where type is "Job"
-            const jobsOnly = response.data.filter(app => 
-            app.type && app.type.trim().toLowerCase() === "job"
-        );
-            setApplications(jobsOnly);
+            // Upgraded Filter AND Sort
+            const jobsOnly = response.data
+            .filter(app => app.type && app.type.trim().toLowerCase() === "job")
+            .sort((a, b) => {
+                if (!a.deadline) return 1;
+                if (!b.deadline) return -1;
+                return new Date(a.deadline) - new Date(b.deadline);
+            });
+            
+        setApplications(jobsOnly);
         } catch (err) {
             setError("Failed to fetch applications.");
         }
@@ -42,10 +48,29 @@ const Jobs = () => {
         }
     };
 
+    const totalApps = applications.length;
+    const interviews = applications.filter(app => app.status === "Interview Scheduled").length;
+    const offers = applications.filter(app => app.status === "Offer").length;
+
     return (
         <div>
         <h2 style={{ marginBottom: "20px" }}>Software Engineering Jobs</h2>
         {error && <p style={{ color: "red" }}>{error}</p>}
+
+        <div style={{ display: "flex", gap: "15px", marginBottom: "25px" }}>
+            <div style={{ flex: 1, backgroundColor: "#f8f9fa", padding: "20px", borderRadius: "8px", border: "1px solid #e0e0e0", textAlign: "center", boxShadow: "0 2px 4px rgba(0,0,0,0.02)" }}>
+            <h3 style={{ margin: "0", fontSize: "2.2em", color: "#1a1a2e" }}>{totalApps}</h3>
+            <p style={{ margin: "5px 0 0 0", color: "#555", fontWeight: "bold", fontSize: "0.9em", textTransform: "uppercase", letterSpacing: "1px" }}>Total Jobs</p>
+            </div>
+            <div style={{ flex: 1, backgroundColor: "#fff3cd", padding: "20px", borderRadius: "8px", border: "1px solid #ffeeba", textAlign: "center", boxShadow: "0 2px 4px rgba(0,0,0,0.02)" }}>
+            <h3 style={{ margin: "0", fontSize: "2.2em", color: "#856404" }}>{interviews}</h3>
+            <p style={{ margin: "5px 0 0 0", color: "#856404", fontWeight: "bold", fontSize: "0.9em", textTransform: "uppercase", letterSpacing: "1px" }}>Interviews</p>
+            </div>
+            <div style={{ flex: 1, backgroundColor: "#d4edda", padding: "20px", borderRadius: "8px", border: "1px solid #c3e6cb", textAlign: "center", boxShadow: "0 2px 4px rgba(0,0,0,0.02)" }}>
+            <h3 style={{ margin: "0", fontSize: "2.2em", color: "#155724" }}>{offers}</h3>
+            <p style={{ margin: "5px 0 0 0", color: "#155724", fontWeight: "bold", fontSize: "0.9em", textTransform: "uppercase", letterSpacing: "1px" }}>Offers</p>
+            </div>
+        </div>
         
         <div style={{ display: "flex", flexDirection: "column", gap: "15px" }}>
             {applications.length === 0 ? (

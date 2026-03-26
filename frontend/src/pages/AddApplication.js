@@ -8,7 +8,9 @@ const AddApplication = () => {
     const [type, setType] = useState("Job"); // Default value
     const [status, setStatus] = useState("Wishlist"); // Default value
     const [deadline, setDeadline] = useState("");
-    const [dateApplied, setDateApplied] = useState("");
+    // Get today's date formatted as YYYY-MM-DD
+    const today = new Date().toISOString().split('T')[0];
+    const [dateApplied, setDateApplied] = useState(today);
     const [link, setLink] = useState("");
     const [notes, setNotes] = useState("");
     const [error, setError] = useState("");

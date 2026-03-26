@@ -17,12 +17,15 @@ const Scholarships = () => {
             headers: { Authorization: `Bearer ${token}` }
             });
             // THE FILTER: Keep items that are Scholarships OR PhD Direct
-            const academicApps = response.data.filter(app => 
-            app.type && (
-                app.type.trim().toLowerCase() === "scholarship" || 
-                app.type.trim().toLowerCase() === "phd direct"
-            )
-            );
+            // Upgraded Filter AND Sort
+            const academicApps = response.data
+            .filter(app => app.type && (app.type.trim().toLowerCase() === "scholarship" || app.type.trim().toLowerCase() === "phd direct"))
+            .sort((a, b) => {
+                if (!a.deadline) return 1;
+                if (!b.deadline) return -1;
+                return new Date(a.deadline) - new Date(b.deadline);
+            });
+            
             setApplications(academicApps);
         } catch (err) {
             setError("Failed to fetch applications.");
@@ -45,11 +48,30 @@ const Scholarships = () => {
         }
     };
 
+    const totalApps = applications.length;
+    const interviews = applications.filter(app => app.status === "Interview Scheduled").length;
+    const offers = applications.filter(app => app.status === "Offer").length;
+
     return (
         <div>
         <h2 style={{ marginBottom: "20px" }}>Academic Applications</h2>
         {error && <p style={{ color: "red" }}>{error}</p>}
-        
+
+        <div style={{ display: "flex", gap: "15px", marginBottom: "25px" }}>
+            <div style={{ flex: 1, backgroundColor: "#f8f9fa", padding: "20px", borderRadius: "8px", border: "1px solid #e0e0e0", textAlign: "center", boxShadow: "0 2px 4px rgba(0,0,0,0.02)" }}>
+            <h3 style={{ margin: "0", fontSize: "2.2em", color: "#1a1a2e" }}>{totalApps}</h3>
+            <p style={{ margin: "5px 0 0 0", color: "#555", fontWeight: "bold", fontSize: "0.9em", textTransform: "uppercase", letterSpacing: "1px" }}>Total Apps</p>
+            </div>
+            <div style={{ flex: 1, backgroundColor: "#fff3cd", padding: "20px", borderRadius: "8px", border: "1px solid #ffeeba", textAlign: "center", boxShadow: "0 2px 4px rgba(0,0,0,0.02)" }}>
+            <h3 style={{ margin: "0", fontSize: "2.2em", color: "#856404" }}>{interviews}</h3>
+            <p style={{ margin: "5px 0 0 0", color: "#856404", fontWeight: "bold", fontSize: "0.9em", textTransform: "uppercase", letterSpacing: "1px" }}>Interviews</p>
+            </div>
+            <div style={{ flex: 1, backgroundColor: "#d4edda", padding: "20px", borderRadius: "8px", border: "1px solid #c3e6cb", textAlign: "center", boxShadow: "0 2px 4px rgba(0,0,0,0.02)" }}>
+            <h3 style={{ margin: "0", fontSize: "2.2em", color: "#155724" }}>{offers}</h3>
+            <p style={{ margin: "5px 0 0 0", color: "#155724", fontWeight: "bold", fontSize: "0.9em", textTransform: "uppercase", letterSpacing: "1px" }}>Offers</p>
+            </div>
+        </div>
+            
         <div style={{ display: "flex", flexDirection: "column", gap: "15px" }}>
             {applications.length === 0 ? (
             <p>No academic applications tracked yet. Keep searching!</p>
