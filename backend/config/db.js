@@ -1,24 +1,28 @@
 const mysql = require("mysql2");
-require("dotenv").config(); 
+require("dotenv").config(); // Force it to load the .env variables right here!
 
-// UPGRADE: We are using createPool instead of createConnection
-const db = mysql.createPool({
+// This will print to the terminal so we can prove it's reading your .env file
+console.log("-> Trying to connect to Aiven Host:", process.env.DB_HOST);
+console.log("-> Using Port:", process.env.DB_PORT);
+
+const db = mysql.createConnection({
   host: process.env.DB_HOST,
+  port: process.env.DB_PORT,
   user: process.env.DB_USER,
   password: process.env.DB_PASSWORD,
   database: process.env.DB_NAME,
-  waitForConnections: true,
-  connectionLimit: 10, // Allows up to 10 simultaneous connections
-  queueLimit: 0
+  ssl: {
+    rejectUnauthorized: false
+  },
+  connectTimeout: 30000 // Give it 30 seconds instead of the default 10
 });
 
-db.getConnection((err, connection) => {
+db.connect((err) => {
   if (err) {
-    console.error("Database connection failed: ", err.message);
-  } else {
-    console.log("MySQL successfully connected using a Connection Pool!");
-    connection.release(); // Puts the connection back in the pool for others to use
+    console.error("Database connection failed:", err.message);
+    return;
   }
+  console.log("✅ Connected to the Cloud Database!");
 });
 
 module.exports = db;
