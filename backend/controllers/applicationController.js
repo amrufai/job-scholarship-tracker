@@ -41,7 +41,7 @@ const getApplications = (req, res) => {
     const userId = req.user.id;
 
     db.query(
-        "SELECT * FROM applications WHERE user_id = ? ORDER BY created_at DESC",
+        "SELECT * FROM applications WHERE user_id = ? ORDER BY id DESC",
         [userId],
         (err, results) => {
         if (err) {
