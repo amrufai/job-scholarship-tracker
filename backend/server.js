@@ -8,7 +8,10 @@ const db = require("./config/db"); // Runs the database connection
 const app = express();
 
 // Middleware
-app.use(cors()); // Allows your React frontend to communicate with this backend
+app.use(cors({
+    origin: ["http://localhost:3000", "https://job-scholarship-tracker.vercel.app"],
+    credentials: true
+})); // Allows your React frontend to communicate with this backend
 app.use(express.json()); // Allows your backend to understand JSON data
 
 // A simple test route
