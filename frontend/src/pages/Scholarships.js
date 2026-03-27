@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { api, authHeaders } from "../api/client";
 
 const Scholarships = () => {
     const [applications, setApplications] = useState([]);
@@ -13,8 +13,8 @@ const Scholarships = () => {
         if (!token) return navigate("/login");
         
         try {
-            const response = await axios.get("https://job-scholarship-tracker.onrender.com/api/applications", {
-            headers: { Authorization: `Bearer ${token}` }
+            const response = await api.get("/api/applications", {
+            headers: authHeaders(token),
             });
             // THE FILTER: Keep items that are Scholarships OR PhD Direct
             // Upgraded Filter AND Sort
@@ -38,10 +38,10 @@ const Scholarships = () => {
         if (window.confirm("Are you sure you want to delete this scholarship application?")) {
         try {
             const token = localStorage.getItem("token");
-            await axios.delete(`https://job-scholarship-tracker.onrender.com/api/applications/${id}`, {
-            headers: { Authorization: `Bearer ${token}` }
+            await api.delete(`/api/applications/${id}`, {
+            headers: authHeaders(token),
             });
-            setApplications(applications.filter(app => app.id !== id));
+            setApplications((prev) => prev.filter((app) => app.id !== id));
         } catch (err) {
             alert("Failed to delete application.");
         }

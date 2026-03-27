@@ -1,6 +1,6 @@
-import React, { useState } from "react";
-import axios from "axios";
+import React, { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
+import { api, authHeaders } from "../api/client";
 
 const EditApplication = () => {
     const navigate = useNavigate();
@@ -11,21 +11,24 @@ const EditApplication = () => {
     const [organization, setOrganization] = useState(appData?.organization || "");
     const [type, setType] = useState(appData?.type || "Job");
     const [status, setStatus] = useState(appData?.status || "Wishlist");
-    
-    // NEW: Format the Date Applied properly
+
     const defaultDateApplied = appData?.date_applied ? new Date(appData.date_applied).toISOString().split('T')[0] : "";
     const [dateApplied, setDateApplied] = useState(defaultDateApplied);
 
-    // Format the Deadline properly
     const defaultDate = appData?.deadline ? new Date(appData.deadline).toISOString().split('T')[0] : "";
     const [deadline, setDeadline] = useState(defaultDate);
-    
+
     const [link, setLink] = useState(appData?.link || "");
     const [notes, setNotes] = useState(appData?.notes || "");
     const [error, setError] = useState("");
 
+    useEffect(() => {
+        if (!appData) {
+            navigate("/", { replace: true });
+        }
+    }, [appData, navigate]);
+
     if (!appData) {
-        navigate("/");
         return null;
     }
 
@@ -34,13 +37,12 @@ const EditApplication = () => {
         const token = localStorage.getItem("token");
 
         try {
-        await axios.put(
-            `https://job-scholarship-tracker.onrender.com/api/applications/${appData.id}`,
-            // NEW: Make sure date_applied is included in the payload!
+        await api.put(
+            `/api/applications/${appData.id}`,
             { title, organization, type, status, date_applied: dateApplied, deadline, link, notes },
-            { headers: { Authorization: `Bearer ${token}` } }
+            { headers: authHeaders(token) }
         );
-        
+
         navigate("/");
         } catch (err) {
         setError(err.response?.data?.message || "Failed to update application.");
@@ -51,9 +53,9 @@ const EditApplication = () => {
         <div style={{ maxWidth: "600px", margin: "0 auto", backgroundColor: "white", padding: "30px", borderRadius: "8px", boxShadow: "0 2px 10px rgba(0,0,0,0.05)" }}>
         <h2 style={{ marginBottom: "20px", color: "#1a1a2e" }}>Edit Opportunity</h2>
         {error && <p style={{ color: "red", marginBottom: "15px" }}>{error}</p>}
-        
+
         <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: "15px" }}>
-            
+
             <div style={{ display: "flex", gap: "15px" }}>
             <input type="text" placeholder="Title" value={title} onChange={(e) => setTitle(e.target.value)} required style={{ flex: 1, padding: "10px", borderRadius: "5px", border: "1px solid #ccc" }} />
             <input type="text" placeholder="Organization" value={organization} onChange={(e) => setOrganization(e.target.value)} required style={{ flex: 1, padding: "10px", borderRadius: "5px", border: "1px solid #ccc" }} />
@@ -65,7 +67,7 @@ const EditApplication = () => {
                 <option value="Scholarship">Scholarship</option>
                 <option value="PhD Direct">PhD Direct</option>
             </select>
-            
+
             <select value={status} onChange={(e) => setStatus(e.target.value)} style={{ flex: 1, padding: "10px", borderRadius: "5px", border: "1px solid #ccc" }}>
                 <option value="Wishlist">Wishlist</option>
                 <option value="Applied">Applied</option>
@@ -75,7 +77,6 @@ const EditApplication = () => {
             </select>
             </div>
 
-            {/* NEW: Side-by-side date pickers for Edit Page */}
             <div style={{ display: "flex", gap: "15px" }}>
             <div style={{ flex: 1, display: "flex", flexDirection: "column" }}>
                 <label style={{ fontSize: "0.85em", fontWeight: "bold", marginBottom: "5px", color: "#555" }}>Date Applied (Optional)</label>

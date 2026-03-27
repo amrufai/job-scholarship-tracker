@@ -25,13 +25,29 @@ CREATE TABLE IF NOT EXISTS applications (
 )`;
 
 db.query(createUsersTable, (err) => {
-  if (err) console.error("Error creating users table:", err);
-  else console.log("✅ Users table created successfully!");
+  if (err) {
+    console.error("Error creating users table:", err);
+    return process.exit(1);
+  }
+  console.log("✅ Users table created successfully!");
 
-  db.query(createAppsTable, (err) => {
-    if (err) console.error("Error creating applications table:", err);
-    else console.log("✅ Applications table created successfully!");
-    
-    process.exit(); // Closes the script
+  db.query(createAppsTable, (err2) => {
+    if (err2) {
+      console.error("Error creating applications table:", err2);
+      return process.exit(1);
+    }
+    console.log("✅ Applications table created successfully!");
+
+    db.query(
+      "CREATE INDEX idx_applications_user_id ON applications (user_id)",
+      (idxErr) => {
+        if (idxErr && idxErr.code !== "ER_DUP_KEYNAME") {
+          console.error("Error creating index:", idxErr);
+          return process.exit(1);
+        }
+        if (!idxErr) console.log("✅ Index idx_applications_user_id ready.");
+        process.exit(0);
+      }
+    );
   });
 });

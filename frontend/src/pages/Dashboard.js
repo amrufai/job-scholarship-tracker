@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { api, authHeaders } from "../api/client";
 
 const Dashboard = () => {
   const [applications, setApplications] = useState([]);
@@ -24,12 +24,11 @@ const Dashboard = () => {
         return;
       }
       try {
-        const response = await axios.get("https://job-scholarship-tracker.onrender.com/api/applications", {
-          headers: { Authorization: `Bearer ${token}` }
+        const response = await api.get("/api/applications", {
+          headers: authHeaders(token),
         });
-        
-        // NEW: The Deadline Radar Sorting Logic
-        const sortedData = response.data.sort((a, b) => {
+
+        const sortedData = [...response.data].sort((a, b) => {
           // If an application has no deadline, push it to the bottom of the list
           if (!a.deadline) return 1;
           if (!b.deadline) return -1;
@@ -52,11 +51,11 @@ const Dashboard = () => {
     if (window.confirm("Are you sure you want to delete this application?")) {
       try {
         const token = localStorage.getItem("token");
-        await axios.delete(`https://job-scholarship-tracker.onrender.com/api/applications/${id}`, {
-          headers: { Authorization: `Bearer ${token}` }
+        await api.delete(`/api/applications/${id}`, {
+          headers: authHeaders(token),
         });
         // Instantly remove it from the screen without reloading the page
-        setApplications(applications.filter(app => app.id !== id));
+        setApplications((prev) => prev.filter((app) => app.id !== id));
       } catch (err) {
         alert("Failed to delete application.");
       }

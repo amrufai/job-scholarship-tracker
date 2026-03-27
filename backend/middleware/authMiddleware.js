@@ -12,9 +12,11 @@ const protect = (req, res, next) => {
 
         // Verify the token using your secret key from the .env file
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
-
-        // Attach the decoded user ID to the request so the next function can use it
-        req.user = decoded;
+        const id = decoded?.id;
+        if (id === undefined || id === null || Number.isNaN(Number(id))) {
+          return res.status(401).json({ message: "Not authorized, invalid token" });
+        }
+        req.user = { id: Number(id) };
 
         next(); // The bouncer lets them pass to the actual route!
         } catch (error) {

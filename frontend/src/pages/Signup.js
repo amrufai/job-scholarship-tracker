@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import axios from "axios";
 import { useNavigate, Link } from "react-router-dom";
+import { api } from "../api/client";
 
 const Signup = () => {
   // NEW: Add state for the display name
@@ -14,7 +14,7 @@ const Signup = () => {
     e.preventDefault();
     try {
       // NEW: Include displayName in the payload
-      await axios.post("https://job-scholarship-tracker.onrender.com/api/auth/register", {
+      await api.post("/api/auth/register", {
         displayName,
         email,
         password,

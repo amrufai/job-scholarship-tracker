@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { api } from "../api/client";
 
 const Login = () => {
   // State to hold what the user types
@@ -17,14 +17,13 @@ const Login = () => {
 
     try {
       // 1. Send the email and password to your Node backend
-      const response = await axios.post("https://job-scholarship-tracker.onrender.com/api/auth/login", {
+      const response = await api.post("/api/auth/login", {
         email,
         password,
       });
 
-      // 2. If successful, save the token and name to the browser's local storage
       localStorage.setItem("token", response.data.token);
-      localStorage.setItem("userName", response.data.name); // ADD THIS LINE!
+      localStorage.setItem("userName", response.data.userName || "My Account");
       
       // 3. Redirect the user back to the Dashboard
       navigate("/");

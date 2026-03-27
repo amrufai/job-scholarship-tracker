@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { api, authHeaders } from "../api/client";
 
 const AddApplication = () => {
     const [title, setTitle] = useState("");
@@ -27,10 +27,10 @@ const AddApplication = () => {
         }
 
         try {
-        await axios.post(
-            "https://job-scholarship-tracker.onrender.com/api/applications",
+        await api.post(
+            "/api/applications",
             { title, organization, type, status, date_applied: dateApplied, deadline, link, notes },
-            { headers: { Authorization: `Bearer ${token}` } }
+            { headers: authHeaders(token) }
         );
         
         // Send you straight back to the Dashboard to see your new entry!

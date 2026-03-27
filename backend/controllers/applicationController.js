@@ -1,5 +1,11 @@
 const db = require("../config/db");
 
+function parseApplicationId(raw) {
+  const id = Number.parseInt(String(raw), 10);
+  if (!Number.isFinite(id) || id < 1) return null;
+  return id;
+}
+
 // @desc    Create a new application
 // @route   POST /api/applications
 const createApplication = (req, res) => {
@@ -20,7 +26,10 @@ const createApplication = (req, res) => {
         sql,
         [userId, title, organization, type, status, date_applied, deadline, link, notes],
         (err, result) => {
-        if (err) return res.status(500).json({ message: "Failed to add application", error: err.message });
+        if (err) {
+          console.error("createApplication:", err.message);
+          return res.status(500).json({ message: "Failed to add application" });
+        }
         res.status(201).json({ message: "Application saved successfully!", applicationId: result.insertId });
         }
     );
@@ -35,7 +44,10 @@ const getApplications = (req, res) => {
         "SELECT * FROM applications WHERE user_id = ? ORDER BY created_at DESC",
         [userId],
         (err, results) => {
-        if (err) return res.status(500).json({ message: "Database error" });
+        if (err) {
+          console.error("getApplications:", err.message);
+          return res.status(500).json({ message: "Database error" });
+        }
         res.status(200).json(results);
         }
     );
@@ -44,8 +56,11 @@ const getApplications = (req, res) => {
 // @desc    Update an application (e.g., changing status from 'Applied' to 'Interview')
 // @route   PUT /api/applications/:id
 const updateApplication = (req, res) => {
-    const { id } = req.params; 
-    const userId = req.user.id; 
+    const id = parseApplicationId(req.params.id);
+    if (!id) {
+        return res.status(400).json({ message: "Invalid application id" });
+    }
+    const userId = req.user.id;
     // 3. Add date_applied here
     const { title, organization, type, status, date_applied, deadline, link, notes } = req.body; 
 
@@ -54,7 +69,10 @@ const updateApplication = (req, res) => {
         "UPDATE applications SET title=?, organization=?, type=?, status=?, date_applied=?, deadline=?, link=?, notes=? WHERE id=? AND user_id=?",
         [title, organization, type, status, date_applied, deadline, link, notes, id, userId],
         (err, result) => {
-        if (err) return res.status(500).json({ message: "Error updating application" });
+        if (err) {
+          console.error("updateApplication:", err.message);
+          return res.status(500).json({ message: "Error updating application" });
+        }
         if (result.affectedRows === 0) return res.status(404).json({ message: "Application not found" });
         res.status(200).json({ message: "Application updated successfully" });
         }
@@ -64,14 +82,20 @@ const updateApplication = (req, res) => {
 // @desc    Delete an application
 // @route   DELETE /api/applications/:id
 const deleteApplication = (req, res) => {
-    const { id } = req.params;
+    const id = parseApplicationId(req.params.id);
+    if (!id) {
+        return res.status(400).json({ message: "Invalid application id" });
+    }
     const userId = req.user.id;
 
     db.query(
         "DELETE FROM applications WHERE id = ? AND user_id = ?",
         [id, userId],
         (err, result) => {
-        if (err) return res.status(500).json({ message: "Error deleting application" });
+        if (err) {
+          console.error("deleteApplication:", err.message);
+          return res.status(500).json({ message: "Error deleting application" });
+        }
         if (result.affectedRows === 0) return res.status(404).json({ message: "Application not found" });
         
         res.status(200).json({ message: "Application deleted successfully" });
