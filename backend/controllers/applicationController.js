@@ -6,106 +6,101 @@ function parseApplicationId(raw) {
   return id;
 }
 
-// @desc    Create a new application
-// @route   POST /api/applications
-const createApplication = (req, res) => {
-  // 1. Add date_applied here
-    const { title, organization, type, status, date_applied, deadline, link, notes } = req.body;
-    const userId = req.user.id; 
+const createApplication = async (req, res) => {
+  const { title, organization, type, status, date_applied, deadline, link, notes } = req.body;
+  const userId = req.user.id;
 
-    if (!title || !organization) {
-        return res.status(400).json({ message: "Please provide at least a title and organization" });
-    }
+  if (!title || !organization) {
+    return res.status(400).json({ message: "Please provide at least a title and organization" });
+  }
 
-    // 2. Add date_applied to the SQL query
-    const sql = `INSERT INTO applications 
-        (user_id, title, organization, type, status, date_applied, deadline, link, notes) 
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+  const sql = `INSERT INTO applications 
+     (user_id, title, organization, type, status, date_applied, deadline, link, notes) 
+     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`;
 
-    db.query(
-        sql,
-        [userId, title, organization, type, status, date_applied, deadline, link, notes],
-        (err, result) => {
-        if (err) {
-          console.error("createApplication:", err.message);
-          return res.status(500).json({ message: "Failed to add application" });
-        }
-        res.status(201).json({ message: "Application saved successfully!", applicationId: result.insertId });
-        }
-    );
-    };
-
-// @desc    Get all applications for a user
-// @route   GET /api/applications
-const getApplications = (req, res) => {
-    const userId = req.user.id;
-
-    db.query(
-        "SELECT * FROM applications WHERE user_id = ? ORDER BY id DESC",
-        [userId],
-        (err, results) => {
-        if (err) {
-          console.error("getApplications:", err.message);
-          return res.status(500).json({ message: "Database error" });
-        }
-        res.status(200).json(results);
-        }
-    );
+  try {
+    // FIX: Using || null converts undefined or "" (empty strings) into safe SQL NULLs
+    const [result] = await db.query(sql, [
+      userId, 
+      title, 
+      organization, 
+      type, 
+      status, 
+      date_applied || null, 
+      deadline || null, 
+      link || null, 
+      notes || null
+    ]);
+    
+    res.status(201).json({ message: "Application saved successfully!", applicationId: result.insertId });
+  } catch (err) {
+    console.error("createApplication:", err.message);
+    res.status(500).json({ message: "Failed to add application" });
+  }
 };
 
-// @desc    Update an application (e.g., changing status from 'Applied' to 'Interview')
-// @route   PUT /api/applications/:id
-const updateApplication = (req, res) => {
-    const id = parseApplicationId(req.params.id);
-    if (!id) {
-        return res.status(400).json({ message: "Invalid application id" });
-    }
-    const userId = req.user.id;
-    // 3. Add date_applied here
-    const { title, organization, type, status, date_applied, deadline, link, notes } = req.body; 
-
-    // 4. Add date_applied to the UPDATE query
-    db.query(
-        "UPDATE applications SET title=?, organization=?, type=?, status=?, date_applied=?, deadline=?, link=?, notes=? WHERE id=? AND user_id=?",
-        [title, organization, type, status, date_applied, deadline, link, notes, id, userId],
-        (err, result) => {
-        if (err) {
-          console.error("updateApplication:", err.message);
-          return res.status(500).json({ message: "Error updating application" });
-        }
-        if (result.affectedRows === 0) return res.status(404).json({ message: "Application not found" });
-        res.status(200).json({ message: "Application updated successfully" });
-        }
+const getApplications = async (req, res) => {
+  const userId = req.user.id;
+  try {
+    const [results] = await db.query(
+      "SELECT * FROM applications WHERE user_id = ? ORDER BY id DESC",
+      [userId]
     );
+    res.status(200).json(results);
+  } catch (err) {
+    console.error("getApplications:", err.message);
+    res.status(500).json({ message: "Database error" });
+  }
 };
 
-// @desc    Delete an application
-// @route   DELETE /api/applications/:id
-const deleteApplication = (req, res) => {
-    const id = parseApplicationId(req.params.id);
-    if (!id) {
-        return res.status(400).json({ message: "Invalid application id" });
-    }
-    const userId = req.user.id;
+const updateApplication = async (req, res) => {
+  const id = parseApplicationId(req.params.id);
+  if (!id) return res.status(400).json({ message: "Invalid application id" });
+  const userId = req.user.id;
+  const { title, organization, type, status, date_applied, deadline, link, notes } = req.body;
 
-    db.query(
-        "DELETE FROM applications WHERE id = ? AND user_id = ?",
-        [id, userId],
-        (err, result) => {
-        if (err) {
-          console.error("deleteApplication:", err.message);
-          return res.status(500).json({ message: "Error deleting application" });
-        }
-        if (result.affectedRows === 0) return res.status(404).json({ message: "Application not found" });
-        
-        res.status(200).json({ message: "Application deleted successfully" });
-        }
+  try {
+    // FIX: Applied the same null fallback here
+    const [result] = await db.query(
+      "UPDATE applications SET title=?, organization=?, type=?, status=?, date_applied=?, deadline=?, link=?, notes=? WHERE id=? AND user_id=?",
+      [
+        title, 
+        organization, 
+        type, 
+        status, 
+        date_applied || null, 
+        deadline || null, 
+        link || null, 
+        notes || null, 
+        id, 
+        userId
+      ]
     );
+
+    if (result.affectedRows === 0) return res.status(404).json({ message: "Application not found" });
+    res.status(200).json({ message: "Application updated successfully" });
+  } catch (err) {
+    console.error("updateApplication:", err.message);
+    res.status(500).json({ message: "Error updating application" });
+  }
 };
 
-module.exports = { 
-    createApplication,
-    getApplications,
-    updateApplication,
-    deleteApplication
+const deleteApplication = async (req, res) => {
+  const id = parseApplicationId(req.params.id);
+  if (!id) return res.status(400).json({ message: "Invalid application id" });
+  const userId = req.user.id;
+  
+  try {
+    const [result] = await db.query(
+      "DELETE FROM applications WHERE id = ? AND user_id = ?",
+      [id, userId]
+    );
+    if (result.affectedRows === 0) return res.status(404).json({ message: "Application not found" });
+    res.status(200).json({ message: "Application deleted successfully" });
+  } catch (err) {
+    console.error("deleteApplication:", err.message);
+    res.status(500).json({ message: "Error deleting application" });
+  }
 };
+
+module.exports = { createApplication, getApplications, updateApplication, deleteApplication };

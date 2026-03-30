@@ -17,27 +17,21 @@ const register = async (req, res) => {
 
   try {
     const hashedPassword = await bcrypt.hash(password, 10);
-    db.query(
+    await db.query(
       "INSERT INTO users (display_name, email, password) VALUES (?, ?, ?)",
-      [String(displayName).trim(), emailNorm, hashedPassword],
-      (err, result) => {
-        if (err) {
-          if (err.code === "ER_DUP_ENTRY") {
-            return res.status(400).json({ message: "Email already in use." });
-          }
-          console.error("register:", err.message);
-          return res.status(500).json({ message: "Database error during registration." });
-        }
-        res.status(201).json({ message: "User registered successfully." });
-      }
+      [String(displayName).trim(), emailNorm, hashedPassword]
     );
-  } catch (error) {
-    console.error("register:", error.message);
+    res.status(201).json({ message: "User registered successfully." });
+  } catch (err) {
+    if (err.code === "ER_DUP_ENTRY") {
+      return res.status(400).json({ message: "Email already in use." });
+    }
+    console.error("register:", err.message);
     res.status(500).json({ message: "Server error." });
   }
 };
 
-const login = (req, res) => {
+const login = async (req, res) => {
   const { email, password } = req.body;
 
   if (!email || !password) {
@@ -46,20 +40,22 @@ const login = (req, res) => {
 
   const emailNorm = normalizeEmail(email);
 
-  db.query(
-    "SELECT * FROM users WHERE LOWER(TRIM(email)) = ?",
-    [emailNorm],
-    async (err, results) => {
-    if (err) {
-      console.error("login:", err.message);
-      return res.status(500).json({ message: "Database error." });
+  try {
+    const [results] = await db.query(
+      "SELECT * FROM users WHERE LOWER(TRIM(email)) = ?",
+      [emailNorm]
+    );
+
+    if (results.length === 0) {
+      return res.status(401).json({ message: "Invalid credentials." });
     }
-    if (results.length === 0) return res.status(401).json({ message: "Invalid credentials." });
 
     const user = results[0];
     const isMatch = await bcrypt.compare(password, user.password);
 
-    if (!isMatch) return res.status(401).json({ message: "Invalid credentials." });
+    if (!isMatch) {
+      return res.status(401).json({ message: "Invalid credentials." });
+    }
 
     const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, { expiresIn: "1h" });
 
@@ -67,8 +63,10 @@ const login = (req, res) => {
       token,
       userName: user.display_name || "My Account",
     });
+  } catch (err) {
+    console.error("login:", err.message);
+    res.status(500).json({ message: "Database error." });
   }
-  );
 };
 
 module.exports = { register, login };
