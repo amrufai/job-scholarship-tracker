@@ -2,8 +2,7 @@
 
 TrackerHub is a full-stack web app for keeping track of job applications, scholarships, and PhD-direct opportunities in one place. Instead of juggling spreadsheets, it gives you a single dashboard with deadlines, statuses (Wishlist → Applied → Interview → Offer/Rejected), and quick stats, all tied to your own account.
 
-**Live demo:** _add your deployed frontend URL here (e.g. Vercel)_
-**API:** _add your deployed backend URL here (e.g. Render)_
+**Live demo:** https://job-scholarship-tracker.vercel.app/
 
 ---
 
@@ -16,7 +15,7 @@ I was tracking job and scholarship applications across notes apps and spreadshee
 - 🔐 **Authentication** — email/password signup and login with hashed passwords (bcrypt) and JWT-based sessions
 - 📋 **Application tracking** — create, edit, and delete entries with title, organization, type, status, dates, a link to the posting, and free-form notes
 - 📊 **Dashboard** — auto-sorted by nearest deadline, with at-a-glance counts of total applications, interviews, and offers
-- 🧭 **Filtered views** — separate `Jobs` and `Scholarships` (Scholarship + PhD Direct) pages, each with their own stats
+- 🧭 **Filtered views** — separate `Jobs` and `Scholarships` pages, each with their own stats
 - 🔒 **Per-user data isolation** — every query is scoped to `user_id` from the verified JWT, so users can only ever see or modify their own applications
 - 🌐 **Deployed as two services** — a React SPA and a standalone Express/MySQL REST API, communicating over CORS with an explicit origin allowlist
 
