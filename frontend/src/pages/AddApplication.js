@@ -14,6 +14,7 @@ const AddApplication = () => {
     const [link, setLink] = useState("");
     const [notes, setNotes] = useState("");
     const [error, setError] = useState("");
+    const [isSubmitting, setIsSubmitting] = useState(false);
 
     const navigate = useNavigate();
 
@@ -26,6 +27,9 @@ const AddApplication = () => {
         return;
         }
 
+        setError("");
+        setIsSubmitting(true);
+
         try {
         await api.post(
             "/api/applications",
@@ -37,6 +41,8 @@ const AddApplication = () => {
         navigate("/");
         } catch (err) {
         setError(err.response?.data?.message || "Failed to save application.");
+        } finally {
+        setIsSubmitting(false);
         }
     };
 
@@ -83,8 +89,21 @@ const AddApplication = () => {
             
             <textarea placeholder="Notes (e.g., Requires 2 recommendation letters, ICEEA2025 paper uploaded...)" value={notes} onChange={(e) => setNotes(e.target.value)} rows="3" style={{ padding: "10px", borderRadius: "5px", border: "1px solid #ccc", resize: "vertical" }}></textarea>
 
-            <button type="submit" style={{ padding: "12px", backgroundColor: "#1a1a2e", color: "white", borderRadius: "5px", cursor: "pointer", border: "none", fontWeight: "bold", marginTop: "10px" }}>
-            Save Application
+            <button
+              type="submit"
+              disabled={isSubmitting}
+              style={{
+                padding: "12px",
+                backgroundColor: isSubmitting ? "#4d4d6e" : "#1a1a2e",
+                color: "white",
+                borderRadius: "5px",
+                cursor: isSubmitting ? "not-allowed" : "pointer",
+                border: "none",
+                fontWeight: "bold",
+                marginTop: "10px",
+              }}
+            >
+              {isSubmitting ? "Saving..." : "Save Application"}
             </button>
         </form>
         </div>

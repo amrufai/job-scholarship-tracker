@@ -7,6 +7,7 @@ const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
   
   // Tool to redirect the user to another page after logging in
   const navigate = useNavigate();
@@ -14,6 +15,7 @@ const Login = () => {
   const handleLogin = async (e) => {
     e.preventDefault(); // Prevents the page from refreshing when you hit submit
     setError(""); // Clear any previous errors
+    setIsSubmitting(true);
 
     try {
       // 1. Send the email and password to your Node backend
@@ -31,6 +33,8 @@ const Login = () => {
     } catch (err) {
       // If the backend sends an error (like "Invalid credentials"), display it
       setError(err.response?.data?.message || "Something went wrong.");
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -56,8 +60,19 @@ const Login = () => {
           required
           style={{ padding: "10px", borderRadius: "5px", border: "1px solid #ccc" }}
         />
-        <button type="submit" style={{ padding: "10px", backgroundColor: "#1a1a2e", color: "white", borderRadius: "5px", cursor: "pointer", border: "none" }}>
-          Log In
+        <button
+          type="submit"
+          disabled={isSubmitting}
+          style={{
+            padding: "10px",
+            backgroundColor: isSubmitting ? "#4d4d6e" : "#1a1a2e",
+            color: "white",
+            borderRadius: "5px",
+            cursor: isSubmitting ? "not-allowed" : "pointer",
+            border: "none",
+          }}
+        >
+          {isSubmitting ? "Logging in..." : "Log In"}
         </button>
       </form>
     </div>

@@ -34,6 +34,9 @@ app.use("/api/auth", authRoutes);
 const applicationRoutes = require("./routes/applicationRoutes");
 app.use("/api/applications", applicationRoutes);
 
+const userRoutes = require("./routes/userRoutes");
+app.use("/api/users", userRoutes);
+
 app.use((req, res) => {
   res.status(404).json({ message: "Not found" });
 });

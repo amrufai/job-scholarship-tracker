@@ -8,10 +8,13 @@ const Signup = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const navigate = useNavigate();
 
   const handleSignup = async (e) => {
     e.preventDefault();
+    setError("");
+    setIsSubmitting(true);
     try {
       // NEW: Include displayName in the payload
       await api.post("/api/auth/register", {
@@ -23,6 +26,8 @@ const Signup = () => {
       navigate("/login");
     } catch (err) {
       setError(err.response?.data?.message || "Signup failed. Please try again.");
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -37,7 +42,7 @@ const Signup = () => {
         {/* NEW: Display Name Input */}
         <input 
           type="text" 
-          placeholder="Display Name (e.g., Almansur)" 
+          placeholder="Display Name (e.g., John)" 
           value={displayName} 
           onChange={(e) => setDisplayName(e.target.value)} 
           required 
@@ -62,8 +67,20 @@ const Signup = () => {
           style={{ padding: "10px", borderRadius: "5px", border: "1px solid #ccc" }}
         />
         
-        <button type="submit" style={{ padding: "12px", backgroundColor: "#1a1a2e", color: "white", borderRadius: "5px", cursor: "pointer", border: "none", fontWeight: "bold" }}>
-          Sign Up
+        <button
+          type="submit"
+          disabled={isSubmitting}
+          style={{
+            padding: "12px",
+            backgroundColor: isSubmitting ? "#4d4d6e" : "#1a1a2e",
+            color: "white",
+            borderRadius: "5px",
+            cursor: isSubmitting ? "not-allowed" : "pointer",
+            border: "none",
+            fontWeight: "bold",
+          }}
+        >
+          {isSubmitting ? "Signing up..." : "Sign Up"}
         </button>
       </form>
 

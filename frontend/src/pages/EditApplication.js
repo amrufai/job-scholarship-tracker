@@ -21,6 +21,7 @@ const EditApplication = () => {
     const [link, setLink] = useState(appData?.link || "");
     const [notes, setNotes] = useState(appData?.notes || "");
     const [error, setError] = useState("");
+    const [isSubmitting, setIsSubmitting] = useState(false);
 
     useEffect(() => {
         if (!appData) {
@@ -36,6 +37,9 @@ const EditApplication = () => {
         e.preventDefault();
         const token = localStorage.getItem("token");
 
+        setError("");
+        setIsSubmitting(true);
+
         try {
         await api.put(
             `/api/applications/${appData.id}`,
@@ -46,6 +50,8 @@ const EditApplication = () => {
         navigate("/");
         } catch (err) {
         setError(err.response?.data?.message || "Failed to update application.");
+        } finally {
+        setIsSubmitting(false);
         }
     };
 
@@ -92,10 +98,23 @@ const EditApplication = () => {
             <textarea placeholder="Notes" value={notes} onChange={(e) => setNotes(e.target.value)} rows="3" style={{ padding: "10px", borderRadius: "5px", border: "1px solid #ccc", resize: "vertical" }}></textarea>
 
             <div style={{ display: "flex", gap: "10px", marginTop: "10px" }}>
-            <button type="submit" style={{ flex: 1, padding: "12px", backgroundColor: "#1a1a2e", color: "white", borderRadius: "5px", cursor: "pointer", border: "none", fontWeight: "bold" }}>
-                Save Changes
+            <button
+              type="submit"
+              disabled={isSubmitting}
+              style={{
+                flex: 1,
+                padding: "12px",
+                backgroundColor: isSubmitting ? "#4d4d6e" : "#1a1a2e",
+                color: "white",
+                borderRadius: "5px",
+                cursor: isSubmitting ? "not-allowed" : "pointer",
+                border: "none",
+                fontWeight: "bold",
+              }}
+            >
+                {isSubmitting ? "Saving..." : "Save Changes"}
             </button>
-            <button type="button" onClick={() => navigate("/")} style={{ flex: 1, padding: "12px", backgroundColor: "#ccc", color: "#333", borderRadius: "5px", cursor: "pointer", border: "none", fontWeight: "bold" }}>
+            <button type="button" onClick={() => navigate("/")} disabled={isSubmitting} style={{ flex: 1, padding: "12px", backgroundColor: "#ccc", color: "#333", borderRadius: "5px", cursor: isSubmitting ? "not-allowed" : "pointer", border: "none", fontWeight: "bold" }}>
                 Cancel
             </button>
             </div>
