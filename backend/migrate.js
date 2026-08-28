@@ -6,7 +6,9 @@ CREATE TABLE IF NOT EXISTS users (
     id INT AUTO_INCREMENT PRIMARY KEY,
     display_name VARCHAR(255),
     email VARCHAR(255) UNIQUE NOT NULL,
-    password VARCHAR(255) NOT NULL
+    password VARCHAR(255) NOT NULL,
+    reset_token VARCHAR(255) NULL,
+    reset_expires_at DATETIME NULL
 )`;
 
 const createAppsTable = `
@@ -24,10 +26,30 @@ CREATE TABLE IF NOT EXISTS applications (
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 )`;
 
+async function addMissingUserColumns() {
+  const columns = [
+    { name: "reset_token", definition: "ALTER TABLE users ADD COLUMN reset_token VARCHAR(255) NULL" },
+    { name: "reset_expires_at", definition: "ALTER TABLE users ADD COLUMN reset_expires_at DATETIME NULL" },
+  ];
+
+  for (const column of columns) {
+    try {
+      await db.query(column.definition);
+    } catch (err) {
+      if (err.code !== "ER_DUP_FIELDNAME") {
+        throw err;
+      }
+    }
+  }
+}
+
 async function migrate() {
   try {
     await db.query(createUsersTable);
     console.log("✅ Users table ready.");
+
+    await addMissingUserColumns();
+    console.log("✅ User reset fields ready.");
 
     await db.query(createAppsTable);
     console.log("✅ Applications table ready.");
