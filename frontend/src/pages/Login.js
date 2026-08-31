@@ -105,132 +105,74 @@ const Login = () => {
   };
 
   return (
-    <div style={{ maxWidth: "400px", margin: "0 auto", marginTop: "50px" }}>
-      <h2>Log In to Your Tracker</h2>
-      {error && <p style={{ color: "red" }}>{error}</p>}
+    <div style={{ maxWidth: 480, margin: "24px auto" }}>
+      <div className="card">
+        <h2 style={{ textAlign: "center", marginBottom: 12 }}>Log In to Your Tracker</h2>
+        {error && <p style={{ color: "#ff6b6b", textAlign: "center" }}>{error}</p>}
 
-      {!showForgotPassword ? (
-        <form onSubmit={handleLogin} style={{ display: "flex", flexDirection: "column", gap: "15px", marginTop: "20px" }}>
-          <input
-            type="email"
-            placeholder="Email Address"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-            style={{ padding: "10px", borderRadius: "5px", border: "1px solid #ccc" }}
-          />
-          <input
-            type="password"
-            placeholder="Password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-            style={{ padding: "10px", borderRadius: "5px", border: "1px solid #ccc" }}
-          />
-          <div style={{ textAlign: "right" }}>
-            <button
-              type="button"
-              onClick={() => {
-                setShowForgotPassword(true);
-                setResetError("");
-                setResetMessage("");
-                setForgotEmail(email);
-              }}
-              style={{ background: "none", border: "none", color: "#0066cc", cursor: "pointer", padding: 0 }}
-            >
-              Forgot password?
-            </button>
-          </div>
-          <button
-            type="submit"
-            disabled={isSubmitting}
-            style={{
-              padding: "10px",
-              backgroundColor: isSubmitting ? "#4d4d6e" : "#1a1a2e",
-              color: "white",
-              borderRadius: "5px",
-              cursor: isSubmitting ? "not-allowed" : "pointer",
-              border: "none",
-            }}
-          >
-            {isSubmitting ? "Logging in..." : "Log In"}
-          </button>
-        </form>
-      ) : (
-        <div style={{ display: "flex", flexDirection: "column", gap: "15px", marginTop: "20px" }}>
-          <h3>Reset Your Password</h3>
-          {resetMessage && <p style={{ color: "green", margin: 0 }}>{resetMessage}</p>}
-          {resetError && <p style={{ color: "red", margin: 0 }}>{resetError}</p>}
-
-          <form onSubmit={handleForgotPassword} style={{ display: "flex", flexDirection: "column", gap: "15px" }}>
+        {!showForgotPassword ? (
+          <form onSubmit={handleLogin} style={{ display: "flex", flexDirection: "column", gap: 12 }}>
             <input
+              className="input"
               type="email"
               placeholder="Email Address"
-              value={forgotEmail || email}
-              onChange={(e) => setForgotEmail(e.target.value)}
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
               required
-              style={{ padding: "10px", borderRadius: "5px", border: "1px solid #ccc" }}
             />
-            <button
-              type="submit"
-              disabled={isResetting}
-              style={{
-                padding: "10px",
-                backgroundColor: isResetting ? "#4d4d6e" : "#1a1a2e",
-                color: "white",
-                borderRadius: "5px",
-                cursor: isResetting ? "not-allowed" : "pointer",
-                border: "none",
-              }}
-            >
-              {isResetting ? "Sending reset code..." : "Send reset code"}
+            <input
+              className="input"
+              type="password"
+              placeholder="Password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+            />
+            <div style={{ textAlign: "right" }}>
+              <button
+                type="button"
+                onClick={() => {
+                  setShowForgotPassword(true);
+                  setResetError("");
+                  setResetMessage("");
+                  setForgotEmail(email);
+                }}
+                style={{ background: "none", border: "none", color: "var(--accent)", cursor: "pointer", padding: 0 }}
+              >
+                Forgot password?
+              </button>
+            </div>
+
+            <button type="submit" disabled={isSubmitting} className="btn-accent">
+              {isSubmitting ? "Logging in..." : "Log In"}
             </button>
           </form>
+        ) : (
+          <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+            <h3 style={{ margin: 0 }}>Reset Your Password</h3>
+            {resetMessage && <p style={{ color: "var(--success)", margin: 0 }}>{resetMessage}</p>}
+            {resetError && <p style={{ color: "#ff6b6b", margin: 0 }}>{resetError}</p>}
 
-          <form onSubmit={handleResetPassword} style={{ display: "flex", flexDirection: "column", gap: "15px" }}>
-            <input
-              type="text"
-              placeholder="Reset code"
-              value={resetCode}
-              onChange={(e) => setResetCode(e.target.value)}
-              required
-              style={{ padding: "10px", borderRadius: "5px", border: "1px solid #ccc" }}
-            />
-            <input
-              type="password"
-              placeholder="New password"
-              value={newPassword}
-              onChange={(e) => setNewPassword(e.target.value)}
-              required
-              style={{ padding: "10px", borderRadius: "5px", border: "1px solid #ccc" }}
-            />
-            <input
-              type="password"
-              placeholder="Confirm new password"
-              value={confirmPassword}
-              onChange={(e) => setConfirmPassword(e.target.value)}
-              required
-              style={{ padding: "10px", borderRadius: "5px", border: "1px solid #ccc" }}
-            />
-            <button
-              type="submit"
-              disabled={isResetting}
-              style={{
-                padding: "10px",
-                backgroundColor: isResetting ? "#4d4d6e" : "#1a1a2e",
-                color: "white",
-                borderRadius: "5px",
-                cursor: isResetting ? "not-allowed" : "pointer",
-                border: "none",
-              }}
-            >
-              {isResetting ? "Resetting..." : "Reset password"}
-            </button>
-          </form>
+            <form onSubmit={handleForgotPassword} style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+              <input
+                className="input"
+                type="email"
+                placeholder="Email Address"
+                value={forgotEmail || email}
+                onChange={(e) => setForgotEmail(e.target.value)}
+                required
+              />
+              <button type="submit" className="btn-accent" disabled={isResetting}>{isResetting ? "Sending..." : "Send reset code"}</button>
+            </form>
 
-          <button
-            type="button"
-            onClick={() => {
+            <form onSubmit={handleResetPassword} style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+              <input className="input" type="text" placeholder="Reset code" value={resetCode} onChange={(e) => setResetCode(e.target.value)} required />
+              <input className="input" type="password" placeholder="New password" value={newPassword} onChange={(e) => setNewPassword(e.target.value)} required />
+              <input className="input" type="password" placeholder="Confirm new password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} required />
+              <button type="submit" className="btn-accent" disabled={isResetting}>{isResetting ? "Resetting..." : "Reset password"}</button>
+            </form>
+
+            <button type="button" onClick={() => {
               setShowForgotPassword(false);
               setForgotEmail("");
               setResetCode("");
@@ -238,13 +180,12 @@ const Login = () => {
               setConfirmPassword("");
               setResetMessage("");
               setResetError("");
-            }}
-            style={{ background: "none", border: "none", color: "#0066cc", cursor: "pointer", textAlign: "left", padding: 0 }}
-          >
-            Back to login
-          </button>
-        </div>
-      )}
+            }} style={{ background: "none", border: "none", color: "var(--accent)", cursor: "pointer", textAlign: "left", padding: 0 }}>
+              Back to login
+            </button>
+          </div>
+        )}
+      </div>
     </div>
   );
 };
