@@ -81,6 +81,52 @@ body {
   padding: 36px;
 }
 
+/* Sidebar nav link classes for consistent contrast */
+.sidebar .nav-link {
+  display: block;
+  padding: 10px 12px;
+  margin-bottom: 8px;
+  border-radius: 8px;
+  color: var(--muted);
+  background: transparent;
+  text-decoration: none;
+}
+
+.sidebar .nav-link:hover {
+  background-color: rgba(26,26,46,0.06);
+  color: var(--text);
+}
+
+.sidebar .nav-link.active {
+  background-color: var(--accent);
+  color: var(--accent-contrast);
+  font-weight: 700;
+}
+
+.sidebar .sidebar-user {
+  padding: 10px;
+  border-radius: 8px;
+  background: linear-gradient(180deg, rgba(255,255,255,0.02), transparent);
+  color: var(--text);
+  text-align: center;
+}
+
+/* Applications grid: 3 columns on wide screens, responsive downwards */
+.applications-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+
+@media (max-width: 1000px) {
+  .applications-grid { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (max-width: 640px) {
+  .applications-grid { grid-template-columns: 1fr; }
+  .sidebar { display: none; }
+}
+
 /* Cards and panels */
 .card {
   background: var(--panel);

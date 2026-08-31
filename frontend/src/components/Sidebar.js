@@ -16,33 +16,21 @@ const Sidebar = () => {
     navigate("/login");
   };
 
-  // NEW: Helper function to apply active styles
-  const getLinkStyle = (path) => {
-    const isActive = location.pathname === path;
-    return {
-      display: "block",
-      padding: "10px",
-      marginBottom: "5px",
-      borderRadius: "5px",
-      textDecoration: "none",
-      color: isActive ? "white" : "#1a1a2e", // White text if active
-      backgroundColor: isActive ? "#1a1a2e" : "transparent", // Dark bg if active
-      fontWeight: isActive ? "bold" : "normal"
-    };
-  };
+  // Helper to return nav-link class with active marker
+  const getLinkClass = (path) => (location.pathname === path ? "nav-link active" : "nav-link");
 
   return (
     <div className="sidebar" style={{ display: "flex", flexDirection: "column", height: "100vh", position: "sticky", top: 0 }}>
       <h2 style={{ marginBottom: "20px" }}>SS Tracker</h2>
       
-      <Link to="/add-application" style={{ display: "block", backgroundColor: "#1a1a2e", color: "white", textAlign: "center", padding: "10px", marginBottom: "20px", borderRadius: "8px", fontWeight: "bold", textDecoration: "none" }}>
+      <Link to="/add-application" className="btn-accent" style={{ display: "block", textAlign: "center", padding: "10px", marginBottom: "20px", borderRadius: "8px", fontWeight: "bold", textDecoration: "none" }}>
         + Add New
       </Link>
 
-      {/* NEW: Apply the getLinkStyle function to our routes */}
-      <Link to="/" style={getLinkStyle("/")}>Dashboard</Link>
-      <Link to="/jobs" style={getLinkStyle("/jobs")}>Jobs</Link>
-      <Link to="/scholarships" style={getLinkStyle("/scholarships")}>Scholarships</Link>
+      {/* Use nav-link classes for clearer contrast */}
+      <Link to="/" className={getLinkClass("/")}>Dashboard</Link>
+      <Link to="/jobs" className={getLinkClass("/jobs")}>Jobs</Link>
+      <Link to="/scholarships" className={getLinkClass("/scholarships")}>Scholarships</Link>
       
       {/* Bottom Section */}
       <div style={{ marginTop: "auto", display: "flex", flexDirection: "column", gap: "10px" }}>
