@@ -54,56 +54,56 @@ const Scholarships = () => {
 
     return (
         <div>
-        <h2 style={{ marginBottom: "20px" }}>Academic Applications</h2>
-        {error && <p style={{ color: "red" }}>{error}</p>}
+        <h2 style={{ marginBottom: 16 }}>Academic Applications</h2>
+        {error && <p style={{ color: "#ff6b6b" }}>{error}</p>}
 
-        <div style={{ display: "flex", gap: "15px", marginBottom: "25px" }}>
-            <div style={{ flex: 1, backgroundColor: "#f8f9fa", padding: "20px", borderRadius: "8px", border: "1px solid #e0e0e0", textAlign: "center", boxShadow: "0 2px 4px rgba(0,0,0,0.02)" }}>
-            <h3 style={{ margin: "0", fontSize: "2.2em", color: "#1a1a2e" }}>{totalApps}</h3>
-            <p style={{ margin: "5px 0 0 0", color: "#555", fontWeight: "bold", fontSize: "0.9em", textTransform: "uppercase", letterSpacing: "1px" }}>Total Apps</p>
+        <div style={{ display: "flex", gap: 16, marginBottom: 20 }}>
+            <div className="card" style={{ flex: 1, textAlign: "center" }}>
+            <h3 style={{ margin: 0, fontSize: "2.2em" }}>{totalApps}</h3>
+            <p style={{ marginTop: 6, color: "var(--muted)", fontWeight: 600, fontSize: "0.85em", textTransform: "uppercase", letterSpacing: "1px" }}>Total Apps</p>
             </div>
-            <div style={{ flex: 1, backgroundColor: "#fff3cd", padding: "20px", borderRadius: "8px", border: "1px solid #ffeeba", textAlign: "center", boxShadow: "0 2px 4px rgba(0,0,0,0.02)" }}>
-            <h3 style={{ margin: "0", fontSize: "2.2em", color: "#856404" }}>{interviews}</h3>
-            <p style={{ margin: "5px 0 0 0", color: "#856404", fontWeight: "bold", fontSize: "0.9em", textTransform: "uppercase", letterSpacing: "1px" }}>Interviews</p>
+            <div className="card" style={{ flex: 1, textAlign: "center", background: "linear-gradient(180deg, rgba(255,243,205,0.8), transparent)" }}>
+            <h3 style={{ margin: 0, fontSize: "2.2em", color: "#856404" }}>{interviews}</h3>
+            <p style={{ marginTop: 6, color: "#856404", fontWeight: 600, fontSize: "0.85em", textTransform: "uppercase", letterSpacing: "1px" }}>Interviews</p>
             </div>
-            <div style={{ flex: 1, backgroundColor: "#d4edda", padding: "20px", borderRadius: "8px", border: "1px solid #c3e6cb", textAlign: "center", boxShadow: "0 2px 4px rgba(0,0,0,0.02)" }}>
-            <h3 style={{ margin: "0", fontSize: "2.2em", color: "#155724" }}>{offers}</h3>
-            <p style={{ margin: "5px 0 0 0", color: "#155724", fontWeight: "bold", fontSize: "0.9em", textTransform: "uppercase", letterSpacing: "1px" }}>Offers</p>
+            <div className="card" style={{ flex: 1, textAlign: "center", background: "linear-gradient(180deg, rgba(212,237,218,0.86), transparent)" }}>
+            <h3 style={{ margin: 0, fontSize: "2.2em", color: "#155724" }}>{offers}</h3>
+            <p style={{ marginTop: 6, color: "#155724", fontWeight: 600, fontSize: "0.85em", textTransform: "uppercase", letterSpacing: "1px" }}>Offers</p>
             </div>
         </div>
             
-        <div style={{ display: "flex", flexDirection: "column", gap: "15px" }}>
-            {applications.length === 0 ? (
+        {applications.length === 0 ? (
             <p>No academic applications tracked yet. Keep searching!</p>
             ) : (
-            applications.map((app) => (
-                <div key={app.id} style={{ padding: "20px", border: "1px solid #e0e0e0", borderRadius: "8px", backgroundColor: "white", boxShadow: "0 2px 4px rgba(0,0,0,0.05)" }}>
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "10px" }}>
-                    <h3 style={{ margin: "0", color: "#1a1a2e" }}>{app.title}</h3>
-                    <div style={{ display: "flex", gap: "10px" }}>
-                    <button onClick={() => navigate(`/edit/${app.id}`, { state: { app } })} style={{ padding: "5px 10px", cursor: "pointer", backgroundColor: "#f1ebd9", border: "none", borderRadius: "4px", fontWeight: "bold" }}>Edit</button>
-                    <button onClick={() => handleDelete(app.id)} style={{ padding: "5px 10px", cursor: "pointer", backgroundColor: "#ff4d4d", color: "white", border: "none", borderRadius: "4px", fontWeight: "bold" }}>Delete</button>
+            <div className="applications-grid">
+                {applications.map((app) => (
+                <div key={app.id} className="card">
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 8 }}>
+                    <h3 style={{ margin: 0 }}>{app.title}</h3>
+                    <div style={{ display: "flex", gap: 8 }}>
+                    <button onClick={() => navigate(`/edit/${app.id}`, { state: { app } })} style={{ padding: "6px 10px", cursor: "pointer", backgroundColor: "var(--panel)", border: `1px solid var(--border)`, borderRadius: 6, fontWeight: 600 }}>Edit</button>
+                    <button onClick={() => handleDelete(app.id)} style={{ padding: "6px 10px", cursor: "pointer", backgroundColor: "#ff4d4d", color: "white", border: "none", borderRadius: 6, fontWeight: 600 }}>Delete</button>
                     </div>
                 </div>
 
-                <p style={{ margin: "5px 0" }}><strong>University/Program:</strong> {app.organization}</p>
-                <p style={{ margin: "5px 0" }}><strong>Type:</strong> {app.type}</p>
-                <p style={{ margin: "5px 0" }}>
+                <p style={{ margin: "6px 0" }}><strong>University/Program:</strong> {app.organization}</p>
+                <p style={{ margin: "6px 0" }}><strong>Type:</strong> {app.type}</p>
+                <p style={{ margin: "6px 0" }}>
                     <strong>Status:</strong> 
-                    <span style={{ marginLeft: "10px", padding: "4px 8px", backgroundColor: "#f1ebd9", borderRadius: "12px", fontSize: "0.9em" }}>
+                    <span style={{ marginLeft: 10, padding: "4px 8px", backgroundColor: "var(--panel)", borderRadius: 12, fontSize: "0.9em", fontWeight: 700 }}>
                     {app.status}
                     </span>
                 </p>
                 
-                {app.date_applied && <p style={{ margin: "8px 0", color: "#28a745", fontWeight: "bold" }}>Applied On: {new Date(app.date_applied).toLocaleDateString()}</p>}
-                {app.deadline && <p style={{ margin: "8px 0", color: "#d9534f", fontWeight: "bold" }}>Deadline: {new Date(app.deadline).toLocaleDateString()}</p>}                
-                {app.link && <p style={{ margin: "8px 0" }}><a href={app.link} target="_blank" rel="noopener noreferrer" style={{ color: "#0066cc", textDecoration: "none", fontWeight: "bold" }}>🔗 View Portal</a></p>}
+                {app.date_applied && <p style={{ margin: "8px 0", color: "var(--success)", fontWeight: 700 }}>Applied On: {new Date(app.date_applied).toLocaleDateString()}</p>}
+                {app.deadline && <p style={{ margin: "8px 0", color: "#d9534f", fontWeight: 700 }}>Deadline: {new Date(app.deadline).toLocaleDateString()}</p>}                
+                {app.link && <p style={{ margin: "8px 0" }}><a href={app.link} target="_blank" rel="noopener noreferrer" style={{ color: "var(--accent)", textDecoration: "none", fontWeight: 700 }}>🔗 View Portal</a></p>}
                 
-                {app.notes && <p style={{ margin: "10px 0 0 0", fontStyle: "italic", color: "#555" }}>Notes: {app.notes}</p>}
+                {app.notes && <p style={{ margin: "10px 0 0 0", fontStyle: "italic", color: "var(--muted)" }}>Notes: {app.notes}</p>}
                 </div>
-            ))
+                ))}
+            </div>
             )}
-        </div>
         </div>
     );
 };

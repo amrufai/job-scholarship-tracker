@@ -47,25 +47,25 @@ const AddApplication = () => {
     };
 
     return (
-        <div style={{ maxWidth: "600px", margin: "0 auto", backgroundColor: "white", padding: "30px", borderRadius: "8px", boxShadow: "0 2px 10px rgba(0,0,0,0.05)" }}>
-        <h2 style={{ marginBottom: "20px", color: "#1a1a2e" }}>Add New Opportunity</h2>
-        {error && <p style={{ color: "red", marginBottom: "15px" }}>{error}</p>}
+        <div style={{ maxWidth: 720, margin: "12px auto" }}>
+        <div className="card">
+        <h2 style={{ marginBottom: 12 }}>Add New Opportunity</h2>
+        {error && <p style={{ color: "#ff6b6b", marginBottom: 12 }}>{error}</p>}
         
-        <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: "15px" }}>
-            
-            <div style={{ display: "flex", gap: "15px" }}>
-            <input type="text" placeholder="Role / Program Title (e.g., Software Engineer)" value={title} onChange={(e) => setTitle(e.target.value)} required style={{ flex: 1, padding: "10px", borderRadius: "5px", border: "1px solid #ccc" }} />
-            <input type="text" placeholder="Organization / University" value={organization} onChange={(e) => setOrganization(e.target.value)} required style={{ flex: 1, padding: "10px", borderRadius: "5px", border: "1px solid #ccc" }} />
+        <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+            <div style={{ display: "flex", gap: 12 }}>
+            <input className="input" type="text" placeholder="Role / Program Title (e.g., Software Engineer)" value={title} onChange={(e) => setTitle(e.target.value)} required style={{ flex: 1 }} />
+            <input className="input" type="text" placeholder="Organization / University" value={organization} onChange={(e) => setOrganization(e.target.value)} required style={{ flex: 1 }} />
             </div>
 
-            <div style={{ display: "flex", gap: "15px" }}>
-            <select value={type} onChange={(e) => setType(e.target.value)} style={{ flex: 1, padding: "10px", borderRadius: "5px", border: "1px solid #ccc" }}>
+            <div style={{ display: "flex", gap: 12 }}>
+            <select value={type} onChange={(e) => setType(e.target.value)} className="input" style={{ flex: 1 }}>
                 <option value="Job">Job</option>
                 <option value="Scholarship">Scholarship</option>
                 <option value="PhD Direct">PhD Direct</option>
             </select>
             
-            <select value={status} onChange={(e) => setStatus(e.target.value)} style={{ flex: 1, padding: "10px", borderRadius: "5px", border: "1px solid #ccc" }}>
+            <select value={status} onChange={(e) => setStatus(e.target.value)} className="input" style={{ flex: 1 }}>
                 <option value="Wishlist">Wishlist</option>
                 <option value="Applied">Applied</option>
                 <option value="Interview Scheduled">Interview Scheduled</option>
@@ -74,38 +74,24 @@ const AddApplication = () => {
             </select>
             </div>
 
-            <div style={{ display: "flex", gap: "15px" }}>
+            <div style={{ display: "flex", gap: 12 }}>
                 <div style={{ flex: 1, display: "flex", flexDirection: "column" }}>
-                    <label style={{ fontSize: "0.85em", fontWeight: "bold", marginBottom: "5px", color: "#555" }}>Date Applied (Optional)</label>
-                    <input type="date" value={dateApplied} onChange={(e) => setDateApplied(e.target.value)} style={{ padding: "10px", borderRadius: "5px", border: "1px solid #ccc", color: dateApplied ? "#000" : "#757575" }} />
+                    <label style={{ fontSize: "0.85em", fontWeight: "600", marginBottom: 6, color: "var(--muted)" }}>Date Applied (Optional)</label>
+                    <input className="input" type="date" value={dateApplied} onChange={(e) => setDateApplied(e.target.value)} style={{ color: dateApplied ? "inherit" : "#757575" }} />
                 </div>
                 <div style={{ flex: 1, display: "flex", flexDirection: "column" }}>
-                    <label style={{ fontSize: "0.85em", fontWeight: "bold", marginBottom: "5px", color: "#555" }}>Application Deadline</label>
-                    <input type="date" value={deadline} onChange={(e) => setDeadline(e.target.value)} style={{ padding: "10px", borderRadius: "5px", border: "1px solid #ccc", color: deadline ? "#000" : "#757575" }} />
+                    <label style={{ fontSize: "0.85em", fontWeight: "600", marginBottom: 6, color: "var(--muted)" }}>Application Deadline</label>
+                    <input className="input" type="date" value={deadline} onChange={(e) => setDeadline(e.target.value)} style={{ color: deadline ? "inherit" : "#757575" }} />
                 </div>
             </div>
             
-            <input type="url" placeholder="Link to Portal / Posting" value={link} onChange={(e) => setLink(e.target.value)} style={{ padding: "10px", borderRadius: "5px", border: "1px solid #ccc" }} />
+            <input className="input" type="url" placeholder="Link to Portal / Posting" value={link} onChange={(e) => setLink(e.target.value)} />
             
-            <textarea placeholder="Notes (e.g., Requires 2 recommendation letters, ICEEA2025 paper uploaded...)" value={notes} onChange={(e) => setNotes(e.target.value)} rows="3" style={{ padding: "10px", borderRadius: "5px", border: "1px solid #ccc", resize: "vertical" }}></textarea>
+            <textarea className="input" placeholder="Notes (e.g., Requires 2 recommendation letters, ICEEA2025 paper uploaded...)" value={notes} onChange={(e) => setNotes(e.target.value)} rows="3" style={{ resize: "vertical" }}></textarea>
 
-            <button
-              type="submit"
-              disabled={isSubmitting}
-              style={{
-                padding: "12px",
-                backgroundColor: isSubmitting ? "#4d4d6e" : "#1a1a2e",
-                color: "white",
-                borderRadius: "5px",
-                cursor: isSubmitting ? "not-allowed" : "pointer",
-                border: "none",
-                fontWeight: "bold",
-                marginTop: "10px",
-              }}
-            >
-              {isSubmitting ? "Saving..." : "Save Application"}
-            </button>
+            <button type="submit" disabled={isSubmitting} className="btn-accent" style={{ marginTop: 6 }}>{isSubmitting ? "Saving..." : "Save Application"}</button>
         </form>
+        </div>
         </div>
     );
 };
